@@ -13,4 +13,16 @@ export const auth = betterAuth({
 
     client
   }),
+
+  //role management
+
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "seeker",
+      },
+    },
+  },
 });

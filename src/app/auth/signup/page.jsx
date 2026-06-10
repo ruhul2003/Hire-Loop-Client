@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { Description, Label, Radio, RadioGroup } from "@heroui/react";
+
 import { At, Lock, ArrowRight, Person, CircleXmarkFill } from "@gravity-ui/icons";
 
 export default function SignUpPage() {
@@ -11,7 +13,11 @@ export default function SignUpPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+  const [role, setRole] = useState("seeker");
+
+
+
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -25,7 +31,8 @@ export default function SignUpPage() {
         email,
         password,
         name,
-        callbackURL: "/", // সফলভাবে সাইন-আপ হলে হোমে নিয়ে যাবে
+        callbackURL: "/",
+        role
       }, {
         onRequest: () => setIsLoading(true),
         onSuccess: () => {
@@ -50,7 +57,7 @@ export default function SignUpPage() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-600/10 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="w-full max-w-md bg-[#0c0c0e]/80 backdrop-blur-md border border-zinc-900 rounded-2xl p-8 shadow-2xl relative z-10">
-        
+
         {/* Logo/Header */}
         <div className="flex flex-col items-center mb-8 text-center">
           <Link href="/" className="flex items-center gap-0.5 font-bold text-2xl tracking-tight mb-3 select-none">
@@ -118,6 +125,30 @@ export default function SignUpPage() {
                 className="bg-transparent text-white text-sm w-full focus:outline-none placeholder-zinc-600"
               />
             </div>
+          </div>
+
+          {/* User Role Selection*/}
+
+          <div className="flex flex-col gap-4">
+            <Label>Subscription plan</Label>
+            <RadioGroup defaultValue="seeker" name="role" onChange={value => setRole(value)} orientation="horizontal">
+              <Radio value="seeker">
+                <Radio.Control>
+                  <Radio.Indicator />
+                </Radio.Control>
+                <Radio.Content>
+                  <Label>Job Seeker</Label>
+                </Radio.Content>
+              </Radio>
+              <Radio value="pro">
+                <Radio.Control>
+                  <Radio.Indicator />
+                </Radio.Control>
+                <Radio.Content>
+                  <Label>Recruiter</Label>
+                </Radio.Content>
+              </Radio>
+            </RadioGroup>
           </div>
 
           {/* Submit Button */}
