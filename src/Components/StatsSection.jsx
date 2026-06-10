@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { motion } from "motion/react";
 
 export default function StatsSection() {
   const stats = [
@@ -44,6 +47,26 @@ export default function StatsSection() {
     },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { 
+        delayChildren: 0.3, 
+        staggerChildren: 0.25 
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
+    },
+  };
+
   return (
     <section className="relative w-full bg-black text-white py-28 px-6 overflow-hidden min-h-[700px] flex flex-col justify-end">
       <div 
@@ -54,16 +77,34 @@ export default function StatsSection() {
 
       <div className="relative max-w-6xl mx-auto w-full z-10 flex flex-col items-center">
         
-        <h2 className="text-center lg:text-5xl md:text-4xl text-3xl font-light tracking-tight max-w-3xl leading-[1.3] text-zinc-300 mb-20 select-none">
+        <motion.h2 
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
+          className="text-center lg:text-5xl md:text-4xl text-3xl font-light tracking-tight max-w-3xl leading-[1.3] text-zinc-300 mb-20 select-none"
+        >
           Assisting over <span className="font-semibold text-white">15,000 job seekers</span> <br />
           find their dream positions.
-        </h2>
+        </motion.h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full"
+        >
           {stats.map((stat) => (
-            <div
+            <motion.div
               key={stat.id}
-              className="bg-[#0c0c0e]/90 backdrop-blur-md border border-zinc-900 rounded-2xl p-8 flex flex-col justify-between min-h-[210px] shadow-2xl transition-all duration-300 hover:border-zinc-850"
+              variants={itemVariants}
+              whileHover={{ 
+                y: -6, 
+                borderColor: "rgba(63, 63, 70, 0.6)",
+                backgroundColor: "rgba(15, 15, 18, 0.95)"
+              }}
+              className="bg-[#0c0c0e]/90 backdrop-blur-md border border-zinc-900 rounded-2xl p-8 flex flex-col justify-between min-h-[210px] shadow-2xl transition-colors duration-300"
             >
               <div className="flex items-center">
                 {stat.icon}
@@ -77,9 +118,9 @@ export default function StatsSection() {
                   {stat.label}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>
