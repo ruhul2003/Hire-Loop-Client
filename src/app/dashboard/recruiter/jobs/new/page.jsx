@@ -16,11 +16,10 @@ import {
     toast
 } from "@heroui/react";
 import { Briefcase, Globe } from "@gravity-ui/icons";
-// import { createJob } from "@/lib/actions/jobs";
 import { redirect } from "next/navigation";
+import { createJob } from "@/lib/actions/jobs";
 
 export default function PostJobPage() {
-    // Mock configuration for recruiter's authenticated state
     const [mockCompany] = useState({
         name: "Acme Corp (Auto-filled)",
         id: "company_123",
