@@ -47,8 +47,8 @@ export default function CompanyProfile() {
 
     try {
       // VITE_IMGBB_API_KEY অথবা NEXT_PUBLIC_IMGBB_API_KEY ব্যবহার করুন
-      const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "YOUR_IMGBB_API_KEY"; 
-      const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+      const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API ;
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
         method: "POST",
         body: formData,
       });
@@ -80,7 +80,7 @@ export default function CompanyProfile() {
       employeeCount: data.employeeCount,
       description: data.description,
       logo: logoUrl,
-      status: company?.status || "pending", // নতুন হলে বাই ডিফল্ট পেন্ডিং
+      status: company?.status || "pending",
     };
 
     setCompany(updatedCompany);
