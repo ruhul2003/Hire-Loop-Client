@@ -11,7 +11,7 @@ const RecruiterJobs = async () => {
     }
 
     const companyId = company._id || company.id || company?.data?._id;
-    const jobs = await getCompanyJobs(companyId) || [];
+    const jobs = await getCompanyJobs(company._id) || [];
 
     // Helper to determine status chip coloring
     const getStatusColor = (status) => {
