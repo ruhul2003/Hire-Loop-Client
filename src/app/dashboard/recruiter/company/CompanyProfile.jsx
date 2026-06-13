@@ -1,5 +1,6 @@
 "use client";
 
+import { createCompany } from "@/lib/actions/companies";
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import {
@@ -11,7 +12,6 @@ import {
   Check, CircleExclamation, Xmark
 } from "@gravity-ui/icons";
 
-
 // Tailwind কাস্টম ক্লাসেস 
 const textInputClass = "w-full bg-[#1d1d20]/50 border border-zinc-800/80 focus-within:border-zinc-700 rounded-xl h-11 text-zinc-200 text-sm placeholder:text-zinc-600 outline-none px-3 transition-colors";
 const textAreaClass = "w-full bg-[#1d1d20]/50 border border-zinc-800/80 focus-within:border-zinc-700 rounded-xl text-zinc-200 text-sm placeholder:text-zinc-600 outline-none p-3.5 transition-colors resize-none";
@@ -19,8 +19,8 @@ const triggerClasses = "w-full flex items-center justify-between bg-[#1d1d20]/50
 const popoverClasses = "bg-[#141416] border border-zinc-900 rounded-xl p-1 shadow-2xl min-w-[200px]";
 const listItemClasses = "px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-900 rounded-lg cursor-pointer transition-colors outline-none data-[selected=true]:bg-zinc-800 data-[selected=true]:text-white";
 
-export default function CompanyProfile(recruiter, recruiterCompany) {
-  // ১. ডামি বা ইনিশিয়াল স্টেটে null রাখলাম যাতে "No Company Profile" ট্রিগার টেস্ট করা যায়
+export default function CompanyProfile({ recruiter, recruiterCompany }) {
+
   const [company, setCompany] = useState(recruiterCompany);
   const [isEditing, setIsEditing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -29,12 +29,14 @@ export default function CompanyProfile(recruiter, recruiterCompany) {
 
   const fileInputRef = useRef(null);
 
-  // এডিট মোড অন করার সময় আগের লোগো সিঙ্ক করা
+  // 🌟 ফিক্সড: ইনফিনিট লুপ বন্ধ করা হলো এবং লোগো সিঙ্ক করা হলো
   useEffect(() => {
-    if (company?.logo) {
-      setLogoUrl(company.logo);
+    setCompany(recruiterCompany);
+    if (recruiterCompany?.logo) {
+      setLogoUrl(recruiterCompany.logo);
     }
-  }, [company]);
+  }, [recruiterCompany]);
+
 
   // --- ImgBB লোগো আপলোড হ্যান্ডলার ---
   const handleLogoUpload = async (e) => {
@@ -72,13 +74,20 @@ export default function CompanyProfile(recruiter, recruiterCompany) {
   };
 
   // --- ফর্ম সাবমিট (ডাটাবেজ ও ক্লায়েন্ট স্টেট সিঙ্ক) ---
-  // --- ফর্ম সাবমিট (ডাটাবেজ ও ক্লায়েন্ট স্টেট সিঙ্ক) ---
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
+
+    // সেফটি চেক: রিক্রুটার আইডি না থাকলে সাবমিট হবে না
+    const currentRecruiterId = recruiter?.id || recruiter?._id;
+    if (!currentRecruiterId) {
+      alert("Recruiter session not found. Please log in again.");
+      setIsSubmitting(false);
+      return;
+    }
 
     const newCompanyData = {
       name: data.companyName,
@@ -89,11 +98,10 @@ export default function CompanyProfile(recruiter, recruiterCompany) {
       description: data.description,
       logo: logoUrl,
       status: company?.status || "pending",
-      recruitrtId:recruiter.id
+      recruiterId: currentRecruiterId // 🌟 ফিক্সড: বানান সংশোধন করা হলো (recruitrtId -> recruiterId)
     };
 
     try {
-      // 🌟 এখানে আপনার ব্যাকএন্ড পোর্ট (৫০০০) অনুযায়ী আসল API কল করা হলো
       const response = await fetch("http://localhost:5000/api/companies", {
         method: "POST",
         headers: {
@@ -104,8 +112,8 @@ export default function CompanyProfile(recruiter, recruiterCompany) {
 
       const payload = await response.json();
 
-      if (payload.success || payload.insertedId) {
-        // ডেটাবেজে সেভ হওয়ার পর ক্লায়েন্ট সাইড স্টেট আপডেট হবে
+      if (payload.success || payload.result?.insertedId || payload.result?.modifiedCount || payload.result?.upsertedId) {
+        // 🌟 ফিক্সড: সঙ্গে সঙ্গে লোকাল স্টেট আপডেট করে UI রি-রেন্ডার করা হলো
         setCompany(newCompanyData);
         alert(company ? "Company profile updated successfully!" : "Company registered successfully! Awaiting admin approval.");
         setIsEditing(false);
@@ -192,7 +200,7 @@ export default function CompanyProfile(recruiter, recruiterCompany) {
                   {getStatusBadge(company.status)}
                 </div>
                 <a
-                  href={company.website.startsWith('http') ? company.website : `https://${company.website}`}
+                  href={company.website?.startsWith('http') ? company.website : `https://${company.website}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-sm text-zinc-500 hover:text-zinc-300 flex items-center gap-1.5 mt-1 transition-colors w-fit"
@@ -317,7 +325,6 @@ export default function CompanyProfile(recruiter, recruiterCompany) {
                   onClick={() => !isUploading && fileInputRef.current?.click()}
                   className={`w-full h-11 bg-[#1d1d20]/30 border border-dashed rounded-xl px-3.5 flex items-center gap-3 transition-colors group ${isUploading ? 'border-zinc-700 cursor-wait' : 'border-zinc-800 hover:border-zinc-700 cursor-pointer'}`}
                 >
-                  {/* ✅ ফিক্সড কোড */}
                   <div className="w-6 h-6 rounded-md bg-[#1d1d20] border border-zinc-800 flex items-center justify-center text-zinc-400 group-hover:text-zinc-200 shrink-0 overflow-hidden relative">
                     {logoUrl ? (
                       <Image
@@ -325,7 +332,7 @@ export default function CompanyProfile(recruiter, recruiterCompany) {
                         alt="Preview"
                         className="object-cover"
                         fill
-                        sizes="24px" // কন্টেইনার ডাইমেনশন w-6 (24px) অনুযায়ী
+                        sizes="24px"
                       />
                     ) : (
                       <ArrowUpToLine className="size-3.5" />
