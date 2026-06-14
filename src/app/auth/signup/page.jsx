@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Description, Label, Radio, RadioGroup } from "@heroui/react";
 
 import { At, Lock, ArrowRight, Person, CircleXmarkFill } from "@gravity-ui/icons";
+import { useSearchParams } from "next/navigation";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -14,6 +15,9 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("seeker");
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
+
 
 
 
@@ -31,13 +35,12 @@ export default function SignUpPage() {
         email,
         password,
         name,
-        callbackURL: "/",
         role
       }, {
         onRequest: () => setIsLoading(true),
         onSuccess: () => {
           setIsLoading(false);
-          router.push("/");
+          router.push(redirectTo);
           router.refresh();
         },
         onError: (ctx) => {
@@ -171,7 +174,7 @@ export default function SignUpPage() {
         {/* Bottom Footer Link */}
         <div className="text-center mt-6 text-xs text-zinc-500">
           Already have an account?{" "}
-          <Link href="/auth/signin" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+          <Link href={`/auth/signin?redirect=${redirectTo}`} className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
             Sign In
           </Link>
         </div>

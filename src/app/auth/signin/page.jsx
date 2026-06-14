@@ -4,37 +4,44 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { At, Lock, ArrowRight, CircleXmarkFill } from "@gravity-ui/icons";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    
     setIsLoading(true);
     setError(null);
 
     try {
-      await authClient.signIn.email({
-        email,
+      const { data, error: authError } = await authClient.signIn.email({
+        email: email.trim(),
         password,
-        callbackURL: "/",
-      }, {
-        onRequest: () => setIsLoading(true),
-        onSuccess: () => {
-          setIsLoading(false);
-        },
-        onError: (ctx) => {
-          setIsLoading(false);
-          setError(ctx.error.message || "Invalid email or password.");
-        }
       });
+
+      if (authError) {
+        setError(authError.message || "Invalid email or password.");
+      } else if (data) {
+        // Success - redirect
+        router.push(redirectTo);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     } catch (err) {
+      console.error("Sign in error:", err);
+      setError("An unexpected network error occurred.");
+    } finally {
       setIsLoading(false);
-      setError("An unexpected error occurred.");
     }
   };
 
@@ -72,7 +79,7 @@ export default function SignInPage() {
             <div className="w-full bg-[#121214] border border-zinc-800 focus-within:border-indigo-600 rounded-xl px-3.5 py-2.5 flex items-center gap-3 transition-colors">
               <At className="text-zinc-500 w-4 h-4" />
               <input
-                type="type"
+                type="email"
                 required
                 placeholder="name@example.com"
                 value={email}
@@ -123,7 +130,7 @@ export default function SignInPage() {
         {/* Bottom Footer Link */}
         <div className="text-center mt-6 text-xs text-zinc-500">
           Don&apos;t have an account?{" "}
-          <Link href="/auth/signup" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+          <Link href={`/auth/signup?redirect=${redirectTo}`}className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
             Sign Up
           </Link>
         </div>
