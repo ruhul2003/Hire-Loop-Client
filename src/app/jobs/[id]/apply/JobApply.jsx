@@ -1,10 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-// Hero UI Components (v3.1.0 atomic anatomy)
 import { Form, Button, TextField, Label, Input, Description, FieldError } from '@heroui/react';
-// Gravity UI Icons for a polished look
 import { ArrowRight, Link, FileText, LayoutHeaderCells } from '@gravity-ui/icons';
-// import { submitApplication } from '@/lib/actions/applications';
+import { submitApplication } from '@/lib/actions/applications';
 
 const JobApply = ({ job, applicant }) => {
     const [formData, setFormData] = useState({
@@ -24,7 +22,6 @@ const JobApply = ({ job, applicant }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Combine the pre-existing job/applicant data with the new form data
         const submissionData = {
             jobId: job?._id,
             jobTitle: job?.jobTitle,
@@ -36,7 +33,6 @@ const JobApply = ({ job, applicant }) => {
         };
 
         console.log('Submitting Application:', submissionData);
-        // Handle your API submission here
         const res = await submitApplication(submissionData);
         if (res.insertedId) {
             alert('Application submitted successfully!');
