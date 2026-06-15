@@ -21,8 +21,7 @@ export async function POST(request) {
             customer_email: user?.email,
             line_items: [
                 {
-                    // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-                    price: priceId,
+                    price: 'price_1TigWuGPo8ovmLPMiejRE4L6',
                     quantity: 1,
                 },
             ],
