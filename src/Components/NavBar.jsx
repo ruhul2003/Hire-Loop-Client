@@ -45,7 +45,7 @@ export default function Navbar() {
           <Link href="/companies" className="text-zinc-400 hover:text-white text-sm font-medium transition-colors duration-200">
             Companies
           </Link>
-          <Link href="/pricing" className="text-zinc-400 hover:text-white text-sm font-medium transition-colors duration-200">
+          <Link href="/plans" className="text-zinc-400 hover:text-white text-sm font-medium transition-colors duration-200">
             Pricing
           </Link>
 
