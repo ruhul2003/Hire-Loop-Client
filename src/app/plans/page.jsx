@@ -9,21 +9,20 @@ import {
     Person,
     Briefcase,
     Rocket,
-    // Zap,
     Star
 } from '@gravity-ui/icons';
 
 const PricingPage = () => {
-    // State to toggle between 'seeker' and 'recruiter' pricing tiers
+
     const [billingTarget, setBillingTarget] = useState('seeker');
-    // State to track opened accordion items in the FAQ section
+
     const [openFaq, setOpenFaq] = useState(null);
 
     const toggleFaq = (index) => {
         setOpenFaq(openFaq === index ? null : index);
     };
 
-    // Organized Data Structuring based directly on your provided image & text parameters
+
     const seekerPlans = [
         {
             name: 'Free',
@@ -246,7 +245,7 @@ const PricingPage = () => {
                             <div className="mt-8">
                                 <form action="/api/checkout_sessions" method="POST">
                                     <input type="hidden" name="plan_id" value={plan.id} />
-                                    <section>
+                                     <section>
                                         <button type="submit" role="link"
                                             className={`block w-full text-center text-xs font-semibold px-4 py-3 rounded-xl transition duration-200 ${plan.popular
                                                 ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20'
