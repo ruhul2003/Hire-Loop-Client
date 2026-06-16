@@ -29,8 +29,8 @@ export default async function Success({ searchParams }) {
             planId: metadata.planId
         }
         // update the user table about the new plan
-        // const result = await createSubscription(subsInfo);
-        // console.log(result);
+        const result = await createSubscription(subsInfo);
+        console.log(result);
 
         return (
             <div className="w-full min-h-screen bg-zinc-950 text-zinc-50 flex flex-col justify-center items-center p-6 select-none">

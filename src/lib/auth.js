@@ -23,6 +23,9 @@ export const auth = betterAuth({
         required: false,
         defaultValue: "seeker",
       },
+      plan: {
+        defaukt:'seeker_free',
+      }
     },
   },
 });
