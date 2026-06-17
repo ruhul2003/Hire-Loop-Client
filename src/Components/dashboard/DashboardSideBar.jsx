@@ -4,16 +4,40 @@ import { LayoutSideContentLeft, Bell, Briefcase, Envelope, Gear, House, Magnifie
 import { Button, Drawer } from "@heroui/react";
 import Link from "next/link";
 
-export function DashboardSideBar() {
-    const navItems = [
-        { icon: House, href:"/dashboard/recruiter", label: "Home" },
-        { icon: Magnifier, href:"/dashboard/recruiter/jobs", label: "Jobs" },
-        { icon: Bell, href:"/dashboard/recruiter/jobs/new", label: "Create a Job" },
-        { icon: Briefcase, href:"/dashboard/recruiter/company", label: "Company Profile" },
-        // { icon: Envelope, label: "Messages" },
-        // { icon: Person, label: "Profile" },
-        // { icon: Gear, label: "Settings" },
+export async function DashboardSideBar() {
+    const user = await getUserSession();
+    const recruiterNavLinks = [
+        { icon: House, href: "/dashboard/recruiter", label: "Home" },
+        { icon: Magnifier, href: "/dashboard/recruiter/jobs", label: "Jobs" },
+        { icon: Bell, href: "/dashboard/recruiter/jobs/new", label: "Create a Job" },
+        { icon: Briefcase, href: "/dashboard/recruiter/company", label: "Company Profile" },
     ];
+
+    const seekerNavLinks = [
+        { icon: House, href: "/dashboard/seeker", label: "Dashboard" },
+        { icon: Magnifier, href: "/dashboard/seeker/jobs", label: "Jobs" },
+        { icon: Bookmark, href: "/dashboard/seeker/saved-jobs", label: "Saved Jobs" },
+        { icon: FileText, href: "/dashboard/seeker/applications", label: "Applications" },
+        { icon: CreditCard, href: "/dashboard/seeker/billing", label: "Billing" },
+        { icon: Gear, href: "/settings", label: "Settings" },
+    ];
+
+    const adminNavLinks = [
+        { icon: House, href: "/dashboard/admin", label: "Dashboard" },
+        { icon: Users, href: "/dashboard/admin/users", label: "Users" },
+        { icon: Building, href: "/dashboard/admin/companies", label: "Companies" },
+        { icon: Briefcase, href: "/dashboard/admin/jobs", label: "Jobs" },
+        { icon: CreditCard, href: "/dashboard/admin/payments", label: "Payments" },
+        { icon: Gear, href: "/dashboard/admin/settings", label: "Settings" },
+    ];
+
+    const navLinksMap = {
+        recruiter: recruiterNavLinks,
+        seeker: seekerNavLinks,
+        admin: adminNavLinks
+    }
+
+    const navItems = [navLinksMap[user?.role || 'seeker' ]];
 
     const navContent = <nav className="flex flex-col gap-1">
         {navItems.map((item) => (
@@ -32,9 +56,9 @@ export function DashboardSideBar() {
     return (
         <>
 
-        <aside className="hidden shrink-0 lg:block w-64 p-4 border-r">
-            {navContent}
-        </aside>
+            <aside className="hidden shrink-0 lg:block w-64 p-4 border-r">
+                {navContent}
+            </aside>
             <Drawer>
                 <Button className="lg:hidden" variant="secondary">
                     <LayoutSideContentLeft />

@@ -34,7 +34,6 @@ export default async function Success({ searchParams }) {
 
         return (
             <div className="w-full min-h-screen bg-zinc-950 text-zinc-50 flex flex-col justify-center items-center p-6 select-none">
-                {/* Decorative ambient glow blur background */}
                 <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-72 h-72 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
 
                 <section
