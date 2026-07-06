@@ -1,5 +1,5 @@
 import { serverFetch } from "../core/server";
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 export const getJobs = async () => {
     return serverFetch("/api/jobs");
